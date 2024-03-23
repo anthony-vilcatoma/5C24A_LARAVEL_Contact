@@ -44,7 +44,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
 # Opcional: Ejecutar migraciones de la base de datos (descomenta si es necesario)
-# RUN php artisan migrate --force
+RUN php artisan migrate --force
 
 # Exponer el puerto 80 para el tráfico HTTP
 EXPOSE 80
