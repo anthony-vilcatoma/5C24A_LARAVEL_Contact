@@ -22,12 +22,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Habilitar el módulo mod_rewrite para Apache
 RUN a2enmod rewrite
 
-# Configurar Apache para servir desde el directorio public de Laravel
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
 # Instalar Composer globalmente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -38,13 +32,15 @@ COPY . /var/www/html
 # Asegúrate de que tu archivo composer.json y composer.lock estén en el directorio raíz de tu proyecto
 RUN composer install --no-dev --optimize-autoloader
 
+# Ejecutar migraciones de la base de datos
+# Asegúrate de configurar adecuadamente tus variables de entorno para la conexión a la base de datos antes de construir tu imagen
+# Si prefieres ejecutar migraciones manualmente después del despliegue, puedes comentar la siguiente línea
+# RUN php artisan migrate --force
+
 # Cambiar la propiedad del directorio /var/www/html a www-data
 # www-data es el usuario por defecto que usa Apache en la imagen base de PHP
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
-
-# Opcional: Ejecutar migraciones de la base de datos (descomenta si es necesario)
-RUN php artisan migrate --force
 
 # Exponer el puerto 80 para el tráfico HTTP
 EXPOSE 80
