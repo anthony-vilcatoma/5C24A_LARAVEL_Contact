@@ -35,7 +35,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Ejecutar migraciones de la base de datos
 # Asegúrate de configurar adecuadamente tus variables de entorno para la conexión a la base de datos antes de construir tu imagen
 # Si prefieres ejecutar migraciones manualmente después del despliegue, puedes comentar la siguiente línea
-RUN php artisan migrate --force
+# RUN php artisan migrate --force
 
 # Cambiar la propiedad del directorio /var/www/html a www-data
 # www-data es el usuario por defecto que usa Apache en la imagen base de PHP
